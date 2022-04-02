@@ -14,7 +14,7 @@ INPUT_FILE_EXTENTION=".csv"
 
 
 # get files (convert it to array)
-FILE_LIST=$(ls $INPUT_DIR/$INPUT_FILE_PREFIX*$INPUT_FILE_EXTENTION)
+FILE_LIST=($(ls $INPUT_DIR/$INPUT_FILE_PREFIX*$INPUT_FILE_EXTENTION))
 
 # create output file and insert header
 cat ${FILE_LIST[0]} \
@@ -22,7 +22,7 @@ cat ${FILE_LIST[0]} \
   > $OUTPUT_FILE
 
 # concatenate all files to OUTPUT_FILE
-for file in $FILE_LIST
+for file in ${FILE_LIST[@]}
 do
   cat $file \
     | tail -n +2 \
