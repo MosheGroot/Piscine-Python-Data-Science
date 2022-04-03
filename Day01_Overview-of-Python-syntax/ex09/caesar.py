@@ -27,7 +27,7 @@ def ascii_shift_char(char: str, shift: int) -> str:
     ASCII_CODE_MAX=127
 
     # get code
-    code = ord(char[0])
+    code = ord(char)
     if (code < ASCII_CODE_MIN) or (code > ASCII_CODE_MAX):
         raise ValueError('The script does not support your language yet')
 
@@ -108,7 +108,6 @@ def caesar_cipher(task: str, data: str, caesar_shift=3) -> str:
 def main():
     """Main function"""
     if len(sys.argv) == 4:
-        print(int(sys.argv[3]))
         print(caesar_cipher(sys.argv[1], sys.argv[2], int(sys.argv[3])))
     else:
         raise RuntimeError('''Invalid number of agruments:
