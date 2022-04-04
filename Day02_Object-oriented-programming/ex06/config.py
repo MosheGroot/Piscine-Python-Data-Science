@@ -20,5 +20,5 @@ them were heads.
 The probabilities are {:.2f}% and {:.2f}%, respectively.
 Our forecast is that in the next {} observations we will have: {} tail and {} heads."""
 
-SLACKBOT_TOKEN='xoxb-3332818006950-3339553072178-rzPR4il50tj2c5xDLm2bHdHx'
-SLACKBOT_CHANNEL_ID='C039SQ31E5C'
+SLACKBOT_TOKEN=''
+SLACKBOT_CHANNEL_ID=''
