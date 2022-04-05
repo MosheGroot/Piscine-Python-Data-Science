@@ -7,45 +7,33 @@ from random import randint
 class Research:
     """Class with research utils above the provided file
     """
+    # csv file format parametrs
+    separator = ','
+    header_fields_number = 2
+    correct_values = [['0', '1'],
+                      ['1', '0']]
+    
     def __init__(self, filename: str) -> None:
         # filename
         self.filename = filename
 
-        # csv file format
-        self.separator = ','
-        self.header_fields_number = 2
-        self.correct_values = [('0', '1'),
-                               ('1', '0')]
+    def __is_correct_csv_header(self, csv_header: str) -> bool:
+        header_fields = csv_header.replace('\n', '').split(self.separator)
+        if len(header_fields) != self.header_fields_number: # correct number of fields
+            return False
 
-    def __is_correct_format(self, csv_data: list, has_header: bool) -> bool:
-        # empty or header-only
-        if len(csv_data) <= 1:
-            return True
-
-        # check header
-        if has_header:
-            header_fields = csv_data[0].split(self.separator)
-            if len(header_fields) != self.header_fields_number: # correct number of fields
-                return False
-
-            for value in header_fields:                         # all non-empty
-                if len(value) == 0:
-                    return False
-
-        # check other lines
-        for index in range(1, len(csv_data)):
-            if len(csv_data[index]) <= 1:   # empty lines
-                continue
-
-            values = csv_data[index].split(self.separator)
-            if len(values) != self.header_fields_number:    # incorect number of fields
-                return False
-
-            value_tuple = (*values[:-1], values[-1].replace('\n', ''))
-            if value_tuple not in self.correct_values:      # not allowed values
-                return False
-
-        return True
+        return all(header_fields)   # all not empty
+        
+    def __is_correct_csv_line(self, csv_line: str) -> bool:
+        csv_line = csv_line.replace('\n', '')
+        if not csv_line:
+            return False
+        
+        values = csv_line.split(self.separator)
+        if len(values) != self.header_fields_number:    # incorect number of fields
+            return False
+        
+        return values in self.correct_values            # only allowed values
 
     def __convert_to_list(self, csv_data: list, has_header: bool) -> list:
         result = []
@@ -72,20 +60,22 @@ class Research:
             raise OSError("Can't read the file")
 
         # read
+        data = []
         with open(self.filename, 'r', encoding='utf-8') as file:
-            raw_data = file.read()
+            # header
+            if has_header:
+                header = file.readline()
+                if not self.__is_correct_csv_header(header):
+                    raise ValueError('Incorect format of header')
+                data.append(header)
 
-        # check syntax
-        splitted_data = raw_data.split('\n')
-        if not self.__is_correct_format(splitted_data, has_header):
-            raise SyntaxError('Incorect format of file')
+            # other lines
+            for csv_line in file:
+                if not self.__is_correct_csv_line(csv_line):
+                    raise ValueError('Incorect format of line')
+                data.append(csv_line)
 
-        # convert to list of lists
-        try:
-            data = self.__convert_to_list(splitted_data, has_header)
-            return data
-        except ValueError:
-            raise ValueError('File contains non-int data')
+        return self.__convert_to_list(data, has_header)
 
 
     class Calculations:

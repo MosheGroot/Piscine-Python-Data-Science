@@ -13,47 +13,43 @@ import config
 class Research:
     """Class with research utils above the provided file
     """
+    # csv file format parametrs
+    separator = ','
+    header_fields_number = 2
+    correct_values = [['0', '1'],
+                      ['1', '0']]
+    
+    
+    # logging
+    logging.basicConfig(filename = 'analytics.log',
+                    filemode = 'w',
+                    format = '%(asctime)s %(message)s',
+                    level = logging.DEBUG)
+    logger = logging.getLogger()
+
+
+    # methods
     def __init__(self, filename: str) -> None:
         # filename
         self.filename = filename
 
-        # csv file format
-        self.separator = ','
-        self.header_fields_number = 2
-        self.correct_values = [('0', '1'),
-                               ('1', '0')]
+    def __is_correct_csv_header(self, csv_header: str) -> bool:
+        header_fields = csv_header.replace('\n', '').split(self.separator)
+        if len(header_fields) != self.header_fields_number: # correct number of fields
+            return False
 
-        self.logger = logging.getLogger()
-
-    def __is_correct_format(self, csv_data: list, has_header: bool) -> bool:
-        # empty or header-only
-        if len(csv_data) <= 1:
-            return True
-
-        # check header
-        if has_header:
-            header_fields = csv_data[0].split(self.separator)
-            if len(header_fields) != self.header_fields_number: # correct number of fields
-                return False
-
-            for value in header_fields:                         # all non-empty
-                if len(value) == 0:
-                    return False
-
-        # check other lines
-        for index in range(1, len(csv_data)):
-            if len(csv_data[index]) <= 1:   # empty lines
-                continue
-
-            values = csv_data[index].split(self.separator)
-            if len(values) != self.header_fields_number:    # incorect number of fields
-                return False
-
-            value_tuple = (*values[:-1], values[-1].replace('\n', ''))
-            if value_tuple not in self.correct_values:      # not allowed values
-                return False
-
-        return True
+        return all(header_fields)   # all not empty
+        
+    def __is_correct_csv_line(self, csv_line: str) -> bool:
+        csv_line = csv_line.replace('\n', '')
+        if not csv_line:
+            return False
+        
+        values = csv_line.split(self.separator)
+        if len(values) != self.header_fields_number:    # incorect number of fields
+            return False
+        
+        return values in self.correct_values            # only allowed values
 
     def __convert_to_list(self, csv_data: list, has_header: bool) -> list:
         result = []
@@ -68,43 +64,43 @@ class Research:
         """Read the file with format checking
 
         Raises:
-        OSError: Can't read the file
+            OSError: Can't read the file
             SyntaxError: File is incorrect formated
 
         Returns:
             str: data of file
         """
-        # log
-        self.logger.debug('Reading the file')
-
+        self.logger.debug('Reading input file')
+        
         # check access
         if not os.access(self.filename, os.R_OK):
-            self.logger.error("Can't read the file")
             raise OSError("Can't read the file")
 
         # read
+        data = []
         with open(self.filename, 'r', encoding='utf-8') as file:
-            raw_data = file.read()
+            # header
+            if has_header:
+                header = file.readline()
+                if not self.__is_correct_csv_header(header):
+                    raise ValueError('Incorect format of header')
+                data.append(header)
 
-        # check syntax
-        splitted_data = raw_data.split('\n')
-        if not self.__is_correct_format(splitted_data, has_header):
-            self.logger.error('Incorect format of file')
-            raise SyntaxError('Incorect format of file')
+            # other lines
+            for csv_line in file:
+                if not self.__is_correct_csv_line(csv_line):
+                    raise ValueError('Incorect format of line')
+                data.append(csv_line)
 
-        # convert to list of lists
-        try:
-            data = self.__convert_to_list(splitted_data, has_header)
-            return data
-        except ValueError:
-            self.logger.error('File contains non-int data')
-            raise ValueError('File contains non-int data')
+        return self.__convert_to_list(data, has_header)
 
     def sent_report_notification(self, success: bool) -> None:
         """Send log about report creation with a slack bot
         Args:
             success (bool): is report creation was success
         """
+        self.logger.debug('Sending report notification')
+        
         # create request
         message = json.loads('{"channel": "", "text": ""}')
         message['channel'] = config.SLACKBOT_CHANNEL_ID
@@ -123,7 +119,6 @@ class Research:
         """
         def __init__(self, data: list) -> None:
             self.data = data
-            self.logger = logging.getLogger()
 
         def counts(self) -> tuple:
             """Count heads and tails of list of [0, 1] or [1, 0] lists
@@ -132,7 +127,7 @@ class Research:
             Returns:
                 tuple[int, int]: number of heads and tails
             """
-            self.logger.debug('Counting the counts of heads and tails')
+            Research.logger.debug('Counting the counts of heads and tails')
             heads = 0
             tails = 0
 
@@ -151,7 +146,7 @@ class Research:
             Returns:
                 tuple[int, int]: heads and tails fractions in precents
             """
-            self.logger.debug('Counting fractions of heads and tails')
+            Research.logger.debug('Counting fractions of heads and tails')
             total = sum(heads_and_tails)
             return tuple(value / total * 100 for value in heads_and_tails)
 
@@ -166,6 +161,7 @@ class Research:
             Returns:
                 list: list of predicted values
             """
+            Research.logger.debug('Predicting randomly')
             result = []
 
             while number_of_predictions:
@@ -180,6 +176,7 @@ class Research:
             Returns:
                 list: last value
             """
+            Research.logger.debug('Predicting last')
             return self.data[-1]
 
         def save_file(self, data: str, filename: str, extention: str) -> None:
@@ -190,7 +187,8 @@ class Research:
                 filename (str): name of file
                 extention (str): extention of file
             """
-            path = f'{filename}.{extention}'
+            Research.logger.debug('Saving data to file')
+            path = os.path.relpath(f'{filename}.{extention}')
 
             with open(path, 'w', encoding='utf-8') as file:
                 file.write(data)

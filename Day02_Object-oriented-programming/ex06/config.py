@@ -1,15 +1,7 @@
 """Config parametrs
 """
 
-import logging
-
-logging.basicConfig(filename = 'analytics.log',
-                    filemode = 'w',
-                    format = '%(asctime)s %(message)s',
-                    level = logging.DEBUG)
-
-
-DATA_FILENAME = '../data.csv'
+DATA_FILENAME = 'data.csv'
 DATA_HAS_HEADER = True
 
 PREDICT_NUMBER_OF_STEPS = 3
