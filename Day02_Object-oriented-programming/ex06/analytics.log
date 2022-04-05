@@ -1,0 +1,4 @@
+2022-04-04 20:11:39,797 Reading the file
+2022-04-04 20:11:39,798 Can't read the file
+2022-04-04 20:11:39,806 Starting new HTTPS connection (1): slack.com:443
+2022-04-04 20:11:40,086 https://slack.com:443 "POST /api/chat.postMessage HTTP/1.1" 200 352
