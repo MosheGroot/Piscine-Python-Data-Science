@@ -17,6 +17,10 @@ class YahooFinanceScrapper:
         self.page = None
 
     def set_ticker(self, ticker_symbol: str) -> None:
+        """Set ticker symbol for next requests
+        Args:
+            ticker_symbol (str): ticker symbol to set
+        """
         self.ticker_symbol = ticker_symbol
 
     def request_page(self) -> int:
@@ -24,7 +28,6 @@ class YahooFinanceScrapper:
         Returns:
             int: status code of request
         """
-
         self.page = requests.get(self.base_url.format(self.ticker_symbol),
                                  headers={'User-Agent': 'Custom'})
         return self.page.status_code
@@ -46,7 +49,6 @@ class YahooFinanceScrapper:
         Returns:
             tuple: row of values with row_name at the beggining
         """
-
         ## get page and check
         if self.page is None or update_request:
             self.request_page()
@@ -66,7 +68,7 @@ class YahooFinanceScrapper:
             if row.find('span', text=row_name, attrs={'class': 'Va(m)'}) is not None:
                 all_cols = row.findAll('div', attrs={'data-test': 'fin-col'})
                 for col in all_cols:
-                    values_row.append(col.find('span').text)
+                    values_row.append(col.text)
 
         # check result
         if len(values_row) == 0:
