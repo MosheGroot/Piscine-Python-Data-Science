@@ -33,7 +33,7 @@ class GmailTester:
 
 def main():
     # settings
-    PRINT_RESULTS = False
+    PRINT_RESULTS = True
     ITERATIONS_NUMBER = 900000
 
     ## measure

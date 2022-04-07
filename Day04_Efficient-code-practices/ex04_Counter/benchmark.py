@@ -58,11 +58,12 @@ def main():
 
     tester = CounterRandomTester(RANDOM_LIST_SIZE)
 
-    test_functions =  {'my function': tester.get_counts_with_loop,
-                       'Counter': tester.get_counts_with_counter,
-                       'my top': tester.get_top_10_with_loop,
-                       "Counter's top": tester.get_top_10_with_counter
-                       }
+    test_functions =  {
+        'my function': tester.get_counts_with_loop,
+        'Counter': tester.get_counts_with_counter,
+        'my top': tester.get_top_10_with_loop,
+        "Counter's top": tester.get_top_10_with_counter
+    }
 
     # measure
     time_results = map(lambda func: (func[0], timeit.timeit(func[1], number=ITERATIONS_NUMBER)),

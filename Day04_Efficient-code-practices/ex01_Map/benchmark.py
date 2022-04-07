@@ -44,10 +44,11 @@ def main():
     ITERATIONS_NUMBER = 900000
     
     ## measure
-    time_results = {'loop': timeit.timeit(GmailTester.get_with_for_loop, number=ITERATIONS_NUMBER),
-                    'list comprehension': timeit.timeit(GmailTester.get_with_list_comprehension, number=ITERATIONS_NUMBER),
-                    'map': timeit.timeit(GmailTester.get_with_map, number=ITERATIONS_NUMBER)
-                    }
+    time_results = {
+        'loop': timeit.timeit(GmailTester.get_with_for_loop, number=ITERATIONS_NUMBER),
+        'list comprehension': timeit.timeit(GmailTester.get_with_list_comprehension, number=ITERATIONS_NUMBER),
+        'map': timeit.timeit(GmailTester.get_with_map, number=ITERATIONS_NUMBER)
+    }
 
     ## prints
     # get fastest
@@ -62,10 +63,11 @@ def main():
 
     # print value results
     if PRINT_RESULTS:
-        results =  {'loop': GmailTester.get_with_for_loop(),
-                    'list comprehension': GmailTester.get_with_list_comprehension(),
-                    'map': GmailTester.get_with_map()
-                    }
+        results =  {
+            'loop': GmailTester.get_with_for_loop(),
+            'list comprehension': GmailTester.get_with_list_comprehension(),
+            'map': GmailTester.get_with_map()
+        }
         for res in results.items():
             print(f'\n{res[0]} : {res[1]}')
 

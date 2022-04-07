@@ -49,11 +49,12 @@ class GmailTester:
 def main(test: str, iterations: str):
     # prepare
     PRINT_RESULTS = True
-    results =  {'loop': GmailTester.get_with_for_loop,
-                'list_comprehension': GmailTester.get_with_list_comprehension,
-                'map': GmailTester.get_with_map,
-                'filter': GmailTester.get_with_filter
-               }
+    results =  {
+        'loop': GmailTester.get_with_for_loop,
+        'list_comprehension': GmailTester.get_with_list_comprehension,
+        'map': GmailTester.get_with_map,
+        'filter': GmailTester.get_with_filter
+    }
     
     # error checks
     try:

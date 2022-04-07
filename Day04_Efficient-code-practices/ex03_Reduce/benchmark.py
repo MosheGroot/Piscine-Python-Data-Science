@@ -30,9 +30,10 @@ class SquaresSumTester:
 def main(test: str, iterations: str, number: str):
     # prepare
     PRINT_RESULTS = True
-    results =  {'loop': SquaresSumTester.get_with_for_loop,
-                'reduce': SquaresSumTester.get_with_reduce,
-               }
+    results =  {
+        'loop': SquaresSumTester.get_with_for_loop,
+        'reduce': SquaresSumTester.get_with_reduce,
+    }
     
     # error checks
     try:

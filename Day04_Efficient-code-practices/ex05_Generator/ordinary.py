@@ -12,7 +12,6 @@ def read_lines(filename: str) -> list:
         return file.readlines()
 
 
-
 #-------------------------------#
 #             Main              #
 #-------------------------------#
