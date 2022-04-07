@@ -1,8 +1,0 @@
-2022-04-05 20:27:32,154 Reading input file
-2022-04-05 20:27:32,154 Counting the counts of heads and tails
-2022-04-05 20:27:32,154 Counting fractions of heads and tails
-2022-04-05 20:27:32,154 Predicting randomly
-2022-04-05 20:27:32,154 Saving data to file
-2022-04-05 20:27:32,154 Sending report notification
-2022-04-05 20:27:32,163 Starting new HTTPS connection (1): slack.com:443
-2022-04-05 20:27:32,433 https://slack.com:443 "POST /api/chat.postMessage HTTP/1.1" 200 347
